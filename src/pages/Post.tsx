@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { format } from "date-fns";
+import DOMPurify from "dompurify";
 
 const Post = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -141,7 +142,12 @@ const Post = () => {
                 [&_strong]:text-foreground [&_strong]:font-semibold
                 [&_em]:italic
               "
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ 
+                __html: DOMPurify.sanitize(post.content, {
+                  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'a', 'strong', 'em', 'br', 'img', 'span', 'div'],
+                  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class']
+                })
+              }}
             />
           </article>
         </main>
