@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PostChartRenderer, { ChartConfig } from "@/components/PostChartRenderer";
 import { format } from "date-fns";
 import DOMPurify from "dompurify";
 
@@ -125,6 +126,11 @@ const Post = () => {
               />
             )}
 
+            {/* Charts */}
+            {post.chart_data && Array.isArray(post.chart_data) && (
+              <PostChartRenderer charts={post.chart_data as unknown as ChartConfig[]} />
+            )}
+
             {/* Content */}
             <div 
               className="prose prose-lg max-w-none
@@ -141,10 +147,13 @@ const Post = () => {
                 [&_a]:text-accent [&_a]:underline [&_a:hover]:text-accent/80
                 [&_strong]:text-foreground [&_strong]:font-semibold
                 [&_em]:italic
+                [&_table]:w-full [&_table]:border-collapse [&_table]:my-6
+                [&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground
+                [&_td]:border [&_td]:border-border [&_td]:px-4 [&_td]:py-2 [&_td]:text-muted-foreground
               "
               dangerouslySetInnerHTML={{ 
                 __html: DOMPurify.sanitize(post.content, {
-                  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'a', 'strong', 'em', 'br', 'img', 'span', 'div'],
+                  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'a', 'strong', 'em', 'br', 'img', 'span', 'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
                   ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class']
                 })
               }}
